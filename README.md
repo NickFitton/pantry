@@ -1,6 +1,6 @@
 # Getting Started
 
-## Prerequisits
+## Prerequisites
 You must have [docker](https://docs.docker.com/get-docker/) installed.
 Run `docker compose up` to spin up a database for the project.
 Run `./scripts/generateKeys.sh` to generate authentication keys.
