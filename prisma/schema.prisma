@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(uuid())
+  first_name  String
+  last_name   String
+  email       String
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  p_hash      String
+  recipes     RecipeUsers[]
+  pantries    UserPantry[]
+  recipeBooks RecipeBook[]
+}
+
+model Recipe {
+  id                 String              @id @default(uuid())
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
+  name               String
+  description        String?
+  method             String[]
+  genres             String[]
+  book_id            String?
+  prep_time_minutes  Int?
+  cook_time_minutes  Int?
+  servings           Int
+  recipe_users       RecipeUsers[]
+  recipe_ingredients RecipeIngredients[]
+  book               RecipeBook?         @relation(fields: [book_id], references: [id], onDelete: Cascade)
+}
+
+model RecipeBook {
+  id      String   @id @default(uuid())
+  name    String
+  author  String
+  genres  String[]
+  user_id String   @unique
+  recipes Recipe[]
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Ingredient {
+  id                 String              @id @default(uuid())
+  name               String
+  plural             String
+  default_measure    String?
+  recipe_ingredients RecipeIngredients[]
+  PantryIngredients  PantryIngredients[]
+
+  @@unique([name, plural])
+}
+
+model Pantry {
+  id                String              @id @default(uuid())
+  name              String
+  user_pantries     UserPantry[]
+  PantryIngredients PantryIngredients[]
+}
+
+// Relations
+model RecipeUsers {
+  id        String @id @default(uuid())
+  user_id   String
+  recipe_id String
+  recipe    Recipe @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model RecipeIngredients {
+  id            String     @id @default(uuid())
+  recipe_id     String
+  ingredient_id String
+  measure       String?
+  quantity      Int
+  group         String     @default("default")
+  recipe        Recipe     @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+  ingredient    Ingredient @relation(fields: [ingredient_id], references: [id], onDelete: Cascade)
+}
+
+model UserPantry {
+  id        String @id @default(uuid())
+  user_id   String
+  pantry_id String
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  pantry    Pantry @relation(fields: [pantry_id], references: [id], onDelete: Cascade)
+}
+
+model PantryIngredients {
+  id            String     @id @default(uuid())
+  pantry_id     String
+  ingredient_id String
+  quantity      Int
+  measure       String
+  pantry        Pantry     @relation(fields: [pantry_id], references: [id], onDelete: Cascade)
+  ingredient    Ingredient @relation(fields: [ingredient_id], references: [id], onDelete: Cascade)
+}

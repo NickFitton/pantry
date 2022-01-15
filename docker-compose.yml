@@ -1,0 +1,11 @@
+services:
+  db:
+    container_name: pg_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: pantry
+      POSTGRES_PASSWORD: 24af0e79-87dd-4163-a4d9-174e975f2530
+      POSTGRES_DB: pantry_test_db
+    ports:
+      - "5432:5432"
