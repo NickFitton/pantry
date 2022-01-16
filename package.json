@@ -28,8 +28,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts"
+    "start": "prisma migrate deploy && node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "generate": "prisma generate"
   },
   "prettier": {}
 }

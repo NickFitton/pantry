@@ -12,6 +12,7 @@ import auth from "fastify-auth";
 import { getPublicKey } from "./utils/singletons/publicKey";
 import { verifyToken } from "./service/AuthService";
 import jwt from "fastify-jwt";
+
 dotenv.config();
 
 const fastify = Fastify({
@@ -37,7 +38,7 @@ const start = async () => {
   loadUserEndpoints(fastify);
   loadLoginEndpoints(fastify);
   try {
-    await fastify.listen(3000);
+    await fastify.listen(8000, "0.0.0.0");
   } catch (err) {
     fastify.log.error(err);
     getPrismaClient().$disconnect();
